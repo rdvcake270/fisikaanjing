@@ -329,7 +329,8 @@
 <body>
 
     <div class="top-bar">
-        <div class="title-text">Mindmap Interaktif Fluida Statis</div>
+        <div class="title-text">Mindmap Interaktif Fluida Statis Kelompok :
+</div>
         <button class="audio-btn" onclick="toggleAudio()">
             <span>🎵</span> <span id="audio-label">Musik: OFF</span>
         </button>
@@ -340,7 +341,7 @@
     <!-- AUDIO PENJELASAN (DISET OLEH JAVASCRIPT SAAT ICON GURU DIKLIK) -->
    <audio id="teacher-explanation" src="assets/audio-hidrostatis.mp3"></audio>
     <div class="mindmap-wrapper">
-        <img src="Assets/mindmap-utama-3.png" alt="Mindmap Fluida Statis Interaktif" class="mindmap-bg">
+        <img src="./index_files/mindmap-utama-3.png" alt="Mindmap Fluida Statis Interaktif" class="mindmap-bg">
 
         <!-- HOTSPOT TAMBAHAN (DITAMBAHKAN DI SINI AGAR BERADA DI ATAS GAMBAR) -->
        
@@ -360,7 +361,7 @@
         <div class="modal-box modal-media-box">
             <button class="close-btn" onclick="closeMediaModal()">✕</button>
             <iframe id="subSimViewer" src="./index_files/saved_resource.html" width="100%" height="100%" style="border-width: medium; border-style: none; border-color: currentcolor; border-image: none; display: none;" allowfullscreen=""></iframe>
-            <img id="subImgViewer" class="sub-infographic-img" src="Assets/pascal.jpeg" alt="Infografis Detail" style="display: none;">
+            <img id="subImgViewer" class="sub-infographic-img" src="file:///home/debian/Downloads/fisikaANJING/Assets/pascal.jpeg" alt="Infografis Detail" style="display: none;">
             <!-- CONTAINER VIDEO BARU -->
             <div id="videoViewer" class="video-container" style="display: none;">
                 <video id="mainVideoPlayer" controls="" src="Assets/vidio-hidro.mp4">
@@ -378,7 +379,7 @@
             
             <!-- SECTION LOGIN -->
             <div id="section-login" style="display: block;">
-                <h3 style="color:#38bdf8; margin-bottom:15px; text-align:center;">Mulai Kuis Fluida Statis</h3>
+                <h3 style="color: #f83838;margin-bottom:15px;text-align:center;">Mulai Kuis Fluida Statis</h3>
                 <form onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label>Nama Lengkap Siswa:</label>
@@ -388,7 +389,7 @@
                         <label>Kelas:</label>
                         <input text="text" id="studentClass" required="" placeholder="Contoh: XI-IPA 1">
                     </div>
-                    <button type="submit" class="action-btn">Mulai Kuis 🚀</button>
+                    <button type="submit" class="action-btn">Mulai Kuis</button>
                 </form>
             </div>
 
