@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)file:///home/debian/Downloads/fisikaANJING/index.html -->
+<html lang="id"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=6693a283-6b76-44e5-916a-514b93db9707
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindmap Interaktif Fluida Statis Kelompok :</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background-color: #080e1e;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .top-bar {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+
+        .title-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .audio-btn {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .audio-btn:hover { transform: scale(1.05); }
+
+        .mindmap-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 9 / 16;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border: 3px solid #38bdf8;
+            background: #111827;
+        }
+
+        .mindmap-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hotspot {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.01);
+            border: 2px dashed rgba(56, 189, 248, 0.5);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+        }
+
+        .hotspot:hover {
+            background: rgba(56, 189, 248, 0.3);
+            border-color: #ffffff;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+        }
+
+        /* PERBAIKAN PRESISI POSISI JENDELA INTERAKTIF (HOTSPOT) */
+        /* Koordinat disesuaikan agar pas dengan elemen gambar */
+        #node-1 {top: 18.5%;left: 5%;width: 41%;height: 24%;} /* Tekanan Hidrostatis */
+        #node-2 {top: 18.5%;right: 5%;width: 41%;height: 24%;} /* Hukum Pascal */
+        #node-center { top: 42.5%; left: 23%; width: 54%; height: 12%; border-radius: 50px; } /* Kuis Pusat */
+        #node-3 { top: 55.5%; left: 5%;    width: 41%; height: 20.5%; } /* Hukum Archimedes */
+        #node-4 { top: 55.5%; right: 5%;   width: 41%; height: 20.5%; } /* Tegangan Permukaan */
+        #node-5 { top: 80.0%; left: 21.5%; width: 57%; height: 18%; } /* Viskositas */
+
+        /* HOTSPOT TAMBAHAN SESUAI PERMINTAAN */
+        #node-teacher { top: 4.0%; left: 8.0%; width: 14%; height: 8%; border-radius: 50%; } /* Icon Guru Kiri Atas */
+        #node-screen {top: 4.0%;right: 2%;width: 17%;height: 10%;} /* Icon Layar Kanan Atas */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .modal-box {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            border: 2px solid #38bdf8;
+        }
+
+        .modal-media-box {
+            max-width: 900px;
+            height: 85vh;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px; height: 36px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .sub-infographic-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* STYLES KHUSUS VIDEO PLAYER */
+        .video-container {
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* STYLES KHUSUS TIMER KUIS */
+        .timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f172a;
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #334155;
+        }
+
+        .timer-badge {
+            background: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #38bdf8, #ef4444);
+            transition: width 1s linear;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: #38bdf8;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            outline: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .option-btn {
+            width: 100%;
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: left;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        .drag-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .draggable {
+            background: #0284c7;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: grab;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .drop-target {
+            border: 2px dashed #38bdf8;
+            border-radius: 8px;
+            padding: 12px;
+            min-height: 45px;
+            background: #0f172a;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .match-label {
+            font-size: 0.85rem;
+            width: 50%;
+        }
+
+        .match-select {
+            width: 50%;
+            padding: 8px;
+            border-radius: 6px;
+            background: #0f172a;
+            color: white;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="title-text">Mindmap Interaktif Fluida Statis</div>
+        <button class="audio-btn" onclick="toggleAudio()">
+            <span>🎵</span> <span id="audio-label">Musik: OFF</span>
+        </button>
+    </div>
+
+    <audio id="bg-music" loop="" src="Assets/nigga.mp3"></audio>
+
+    <!-- AUDIO PENJELASAN (DISET OLEH JAVASCRIPT SAAT ICON GURU DIKLIK) -->
+   <audio id="teacher-explanation" src="assets/audio-hidrostatis.mp3"></audio>
+    <div class="mindmap-wrapper">
+        <img src="Assets/mindmap-utama-3.png" alt="Mindmap Fluida Statis Interaktif" class="mindmap-bg">
+
+        <!-- HOTSPOT TAMBAHAN (DITAMBAHKAN DI SINI AGAR BERADA DI ATAS GAMBAR) -->
+       
+        <div class="hotspot" id="node-screen" onclick="openVideoModal()"></div>
+
+        <!-- HOTSPOT MATERI & KUIS (POSISI SUDAH DIREVISI MENJADI PRESISI) -->
+        <div class="hotspot" id="node-1" onclick="openSubInfographic(1)"></div>
+        <div class="hotspot" id="node-2" onclick="openSubInfographic(2)"></div>
+        <div class="hotspot" id="node-center" onclick="openQuizModal()"></div>
+        <div class="hotspot" id="node-3" onclick="openSubInfographic(3)"></div>
+        <div class="hotspot" id="node-4" onclick="openSubInfographic(4)"></div>
+        <div class="hotspot" id="node-5" onclick="openSubInfographic(5)"></div>
+    </div>
+
+    <!-- Modal Sub-Materi -->
+    <div id="mediaModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box modal-media-box">
+            <button class="close-btn" onclick="closeMediaModal()">✕</button>
+            <iframe id="subSimViewer" src="./index_files/saved_resource.html" width="100%" height="100%" style="border-width: medium; border-style: none; border-color: currentcolor; border-image: none; display: none;" allowfullscreen=""></iframe>
+            <img id="subImgViewer" class="sub-infographic-img" src="Assets/pascal.jpeg" alt="Infografis Detail" style="display: none;">
+            <!-- CONTAINER VIDEO BARU -->
+            <div id="videoViewer" class="video-container" style="display: none;">
+                <video id="mainVideoPlayer" controls="" src="Assets/vidio-hidro.mp4">
+                    <source src="" type="video/mp4">
+                    Browser Anda tidak mendukung tag video.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Kuis -->
+    <div id="quizModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeQuizModal()">✕</button>
+            
+            <!-- SECTION LOGIN -->
+            <div id="section-login" style="display: block;">
+                <h3 style="color:#38bdf8; margin-bottom:15px; text-align:center;">Mulai Kuis Fluida Statis</h3>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Nama Lengkap Siswa:</label>
+                        <input text="text" id="studentName" required="" placeholder="Masukkan nama...">
+                    </div>
+                    <div class="form-group">
+                        <label>Kelas:</label>
+                        <input text="text" id="studentClass" required="" placeholder="Contoh: XI-IPA 1">
+                    </div>
+                    <button type="submit" class="action-btn">Mulai Kuis 🚀</button>
+                </form>
+            </div>
+
+            <!-- SECTION SOAL KUIS (DENGAN TIMER) -->
+            <div id="section-question" style="display: none;">
+                
+                <!-- HEADER TIMER -->
+                <div class="timer-header">
+                    <div style="font-size:0.8rem; color:#94a3b8;">
+                        Siswa: <b id="display-student-info" style="color:#38bdf8;">-</b>
+                    </div>
+                    <div class="timer-badge">
+                        <span>⏳</span> <span id="timer-counter">30s</span>
+                    </div>
+                </div>
+
+                <!-- PROGRESS BAR TIMER -->
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="timer-progress"></div>
+                </div>
+
+                <div class="question-text" id="display-question-text">Pernyataan Soal...</div>
+                
+                <div id="display-interactive-area"></div>
+
+                <button id="btn-submit-answer" class="action-btn" style="display:none;">Jawab &amp; Lanjut ➔</button>
+            </div>
+
+            <!-- SECTION HASIL -->
+            <div id="section-result" style="display: none; text-align:center;">
+                <h2 style="color:#38bdf8; margin-bottom:10px;">Kuis Selesai! 🎉</h2>
+                <p style="margin-bottom:5px;">Nama: <b id="result-name">-</b></p>
+                <p style="margin-bottom:15px;">Kelas: <b id="result-class">-</b></p>
+                <div style="font-size:1.5rem; background:#0f172a; padding:15px; border-radius:10px; margin-bottom:15px;">
+                    Skor Akhir: <b id="result-score" style="color:#4ade80;">0</b> / 100
+                </div>
+                <button class="action-btn" onclick="resetQuiz()">Ulangi Kuis</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // DAFTAR MEDIA DIPERBARUI UNTUK MENCAKUP VIDEO DAN AUDIO
+        const subMedia = {
+            1: { type: 'sim', src: "https://phet.colorado.edu/sims/html/under-pressure/latest/under-pressure_all.html" },
+            2: { type: 'img', src: "pascal.jpeg" },
+            3: { type: 'sim', src: "https://phet.colorado.edu/sims/html/buoyancy/latest/buoyancy_all.html" },
+            4: { type: 'img', src: "permukaan.jpeg" },
+            5: { type: 'img', src: "viskositas.jpeg" },
+            'video-intro': { type: 'video', src: "Assets/vidio-hidro.mp4" }, // Ganti dengan link video MP4 Anda
+            'teacher-explanation-atas': { type: 'audio', src: "Assets/audio-hidrostatis.mp3" }, // Ganti dengan link audio MP3 Anda
+            'teacher-explanation-tengah': { type: 'audio', src: "Assets/audio-hidrostatis.mp3" } // Ganti dengan link audio MP3 Anda
+        };
+
+const quizData = [
+    { 
+        type: "mcq", 
+        question: "Prinsip kerja rem hidrolik pada mobil memanfaatkan hukum fisika...", 
+        options: ["Hukum Archimedes", "Hukum Pascal", "Hukum Boyles", "Hukum Bernoulli"], 
+        answer: 1 
+    },
+    { 
+        type: "tf", 
+        question: "Tekanan hidrostatis tidak dipengaruhi oleh massa jenis zat cair, melainkan hanya dipengaruhi oleh kedalaman.", 
+        options: ["Benar", "Salah"], 
+        answer: 1 
+    },
+    { 
+        type: "mcq", 
+        question: "Minyak goreng berada dalam wadah setinggi 2 meter (massa jenis minyak = 800 kg/m³). Jika g = 10 m/s², berapakah tekanan hidrostatis pada dasar wadah?<br><small><b>Rumus: P<sub>h</sub> = ρ × g × h</b></small>", 
+        options: [
+            "1.600 Pa", 
+            "8.000 Pa", 
+            "16.000 Pa", 
+            "160.000 Pa"
+        ], 
+        answer: 2 // Jawaban: C (16.000 Pa)
+    },
+    { 
+        type: "mcq", 
+        question: "Suatu benda mengapung di atas air karena gaya apung (F<sub>a</sub>) yang bekerja pada benda tersebut...", 
+        options: [
+            "Lebih kecil dari berat benda", 
+            "Sama dengan berat benda", 
+            "Sama dengan nol", 
+            "Tidak berhubungan dengan berat benda"
+        ], 
+        answer: 1 
+    },
+    { 
+        type: "tf", 
+        question: "Silet atau klip kertas dapat mengapung di permukaan air yang tenang akibat adanya fenomena tegangan permukaan.", 
+        options: ["Benar", "Salah"], 
+        answer: 0 
+    },
+    { 
+        type: "dragdrop", 
+        question: "Setiap benda yang dicelupkan sebagian atau seluruhnya ke dalam zat cair akan mengalami gaya ke atas yang besarnya sama dengan berat zat cair yang dipindahkan. Ini adalah bunyi hukum!", 
+        words: ["Pascal", "Archimedes", "Bernoulli"], 
+        answer: "Archimedes" 
+    },
+    { 
+        type: "short", 
+        question: "Gaya ke atas yang dialami benda di dalam fluida sering juga disebut sebagai gaya...", 
+        answer: "apung" 
+    },
+    { 
+        type: "matching", 
+        question: "Pasangkan fenomena fluida berikut dengan penyebab atau hukum yang mendasarinya!", 
+        pairs: [
+            { label: "Batu tenggelam di air", options: ["Tegangan Permukaan", "Massa jenis benda > massa jenis air"], answer: "Massa jenis benda > massa jenis air" }, 
+            { label: "Serangga berjalan di air", options: ["Tegangan Permukaan", "Massa jenis benda > massa jenis air"], answer: "Tegangan Permukaan" }
+        ] 
+    },
+    { 
+        type: "mcq", 
+        question: "Sebuah pompa hidrolik memiliki luas penampang A<sub>1</sub> = 5 cm² dan A<sub>2</sub> = 50 cm². Jika gaya tekan sebesar 50 N diberikan pada penampang kecil, berapa beban maksimum F<sub>2</sub> yang dapat diangkat pada penampang besar?<br><small><b>Rumus: F<sub>1</sub> / A<sub>1</sub> = F<sub>2</sub> / A<sub>2</sub></b></small>", 
+        options: [
+            "250 N", 
+            "500 N", 
+            "1.000 N", 
+            "2.500 N"
+        ], 
+        answer: 1 // Jawaban: B (500 N)
+    },
+    { 
+        type: "tf", 
+        question: "Madu memiliki nilai viskositas yang lebih tinggi dibandingkan dengan air murni.", 
+        options: ["Benar", "Salah"], 
+        answer: 0 
+    }
+];
+
+        let studentData = { name: "", class: "" };
+        let currentQuestion = 0;
+        let score = 0;
+        let draggedValue = "";
+
+        // VARIABEL PENGATUR TIMER
+        const TIME_LIMIT_PER_QUESTION = 120; // 30 Detik per soal
+        let timeLeft = TIME_LIMIT_PER_QUESTION;
+        let timerInterval = null;
+
+        // FUNGSI BARU UNTUK AUDIO GURU
+        function playTeacherExplanation() {
+            const teacherAudio = document.getElementById('teacher-explanation');
+            const mediaSource = subMedia['teacher-explanation'].src;
+            
+            // Hentikan musik latar jika sedang diputar agar tidak tabrakan
+            const bgMusic = document.getElementById('bg-music');
+            if (isPlaying) {
+                bgMusic.pause();
+                document.getElementById('audio-label').innerText = "Musik: OFF";
+                isPlaying = false;
+            }
+
+            // Set sumber audio dan putar
+            if (mediaSource) {
+                teacherAudio.src = mediaSource;
+                teacherAudio.play().catch(() => { alert("Gagal memutar audio penjelasan. Periksa tautan sumber."); });
+            } else {
+                alert("Tautan audio penjelasan belum diset.");
+            }
+        }
+        function playAudioGuru() {
+        // Ambil elemen audionya
+        var audioElement = document.getElementById('teacher-explanation');
+    
+        // Tentukan sumber audionya di sini
+      audioElement.src = 'penjelasan_guru.mp3'; // <--- PASTIKAN INI ADA
+    
+    // Putar audionya
+    audioElement.play();
+}
+        // FUNGSI BARU UNTUK BUKA VIDEO MODAL
+        function openVideoModal() {
+            hideAllViewers();
+            const videoViewer = document.getElementById('videoViewer');
+            const videoPlayer = document.getElementById('mainVideoPlayer');
+            const videoSource = subMedia['video-intro'].src;
+
+            // Hentikan musik latar
+            const bgMusic = document.getElementById('bg-music');
+            if (isPlaying) {
+                bgMusic.pause();
+                document.getElementById('audio-label').innerText = "Musik: OFF";
+                isPlaying = false;
+            }
+        
+            if (videoSource) {
+                videoPlayer.src = videoSource;
+                videoViewer.style.display = "block";
+                document.getElementById('mediaModal').style.display = 'flex';
+                videoPlayer.play();
+            } else {
+                alert("Tautan video belum diset.");
+            }
+        }
+
+        function openSubInfographic(id) {
+            hideAllViewers();
+            const media = subMedia[id];
+            if (!media) return;
+
+            if (media.type === 'sim') {
+                const simViewer = document.getElementById('subSimViewer');
+                simViewer.src = media.src;
+                simViewer.style.display = "block";
+            } else if (media.type === 'img') {
+                const imgViewer = document.getElementById('subImgViewer');
+                imgViewer.src = media.src;
+                imgViewer.style.display = "block";
+            }
+            document.getElementById('mediaModal').style.display = 'flex';
+        }
+
+        // FUNGSI HELPER UNTUK SEMBUNYIKAN SEMUA VIEWER MODAL
+        function hideAllViewers() {
+            document.getElementById('subSimViewer').style.display = "none";
+            document.getElementById('subImgViewer').style.display = "none";
+            document.getElementById('videoViewer').style.display = "none";
+            document.getElementById('subSimViewer').src = ""; // Stop iframe loading
+            document.getElementById('mainVideoPlayer').pause(); // Stop video
+        }
+
+        function closeMediaModal() {
+            hideAllViewers();
+            document.getElementById('mediaModal').style.display = 'none';
+        }
+
+        function openQuizModal() {
+            document.getElementById('quizModal').style.display = 'flex';
+            if (!studentData.name) {
+                showQuizSection('login');
+            } else {
+                showQuizSection('question');
+                renderQuestion();
+            }
+        }
+
+        function closeQuizModal() {
+            stopTimer();
+            document.getElementById('quizModal').style.display = 'none';
+        }
+
+        function showQuizSection(sectionName) {
+            document.getElementById('section-login').style.display = (sectionName === 'login') ? 'block' : 'none';
+            document.getElementById('section-question').style.display = (sectionName === 'question') ? 'block' : 'none';
+            document.getElementById('section-result').style.display = (sectionName === 'result') ? 'block' : 'none';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            studentData.name = document.getElementById('studentName').value;
+            studentData.class = document.getElementById('studentClass').value;
+            currentQuestion = 0;
+            score = 0;
+            showQuizSection('question');
+            renderQuestion();
+        }
+
+        // FUNGSIONALITAS TIMER HUKUM HITUNG MUNDUR
+        function startTimer() {
+            stopTimer(); // Hentikan timer sebelumnya jika ada
+            timeLeft = TIME_LIMIT_PER_QUESTION;
+            updateTimerUI();
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+
+                // Jika waktu habis, anggap salah & lanjut ke soal berikutnya
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    checkAnswer(false); 
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+        }
+
+        function updateTimerUI() {
+            document.getElementById('timer-counter').innerText = `${timeLeft}s`;
+            const percentage = (timeLeft / TIME_LIMIT_PER_QUESTION) * 100;
+            document.getElementById('timer-progress').style.width = `${percentage}%`;
+        }
+
+        function renderQuestion() {
+            if (currentQuestion < quizData.length) {
+                const q = quizData[currentQuestion];
+                
+                document.getElementById('display-student-info').innerText = `${studentData.name} (${studentData.class})`;
+                document.getElementById('display-question-text').innerHTML = `Soal ${currentQuestion + 1}/${quizData.length}:<br>${q.question}`;
+                
+                const container = document.getElementById('display-interactive-area');
+                const submitBtn = document.getElementById('btn-submit-answer');
+                container.innerHTML = '';
+                submitBtn.style.display = 'none';
+
+                // Jalankan Timer Setiap Soal Baru Muncul
+                startTimer();
+
+                if (q.type === 'mcq' || q.type === 'tf') {
+                    q.options.forEach((opt, idx) => {
+                        const btn = document.createElement('button');
+                        btn.className = 'option-btn';
+                        btn.innerHTML = opt;
+                        btn.onclick = () => checkAnswer(idx);
+                        container.appendChild(btn);
+                    });
+                } else if (q.type === 'short') {
+                    container.innerHTML = `<input type="text" id="short-answer-input" placeholder="Ketik jawaban Anda..." style="width:100%; padding:12px; border-radius:8px; border:1px solid #334155; background:#0f172a; color:white; outline:none; margin-top:10px;">`;
+                    submitBtn.style.display = 'block';
+                    submitBtn.onclick = () => {
+                        const userAns = document.getElementById('short-answer-input').value.trim().toLowerCase();
+                        checkAnswer(userAns === q.answer.toLowerCase() ? true : false);
+                    };
+                } else if (q.type === 'dragdrop') {
+                    let dragHTML = `<div class="drag-container">`;
+                    q.words.forEach(w => { dragHTML += `<div class="draggable" draggable="true" ondragstart="drag(event)" id="drag-${w}">${w}</div>`; });
+                    dragHTML += `</div><div class="drop-target" ondrop="drop(event)" ondragover="allowDrop(event)" id="drop-box">Drop kata di sini</div>`;
+                    container.innerHTML = dragHTML;
+
+                    submitBtn.style.display = 'block';
+                    submitBtn.onclick = () => {
+                        const droppedText = document.getElementById('drop-box').innerText;
+                        checkAnswer(droppedText === q.answer ? true : false);
+                    };
+                } else if (q.type === 'matching') {
+                    let matchHTML = '';
+                    q.pairs.forEach((p, idx) => {
+                        matchHTML += `<div class="match-row"><span class="match-label">${p.label}</span><select class="match-select" id="match-sel-${idx}"><option value="">--Pilih--</option>${p.options.map(o => `<option value="${o}">${o}</option>`).join('')}</select></div>`;
+                    });
+                    container.innerHTML = matchHTML;
+
+                    submitBtn.style.display = 'block';
+                    submitBtn.onclick = () => {
+                        let allCorrect = true;
+                        q.pairs.forEach((p, idx) => {
+                            if (document.getElementById(`match-sel-${idx}`).value !== p.answer) allCorrect = false;
+                        });
+                        checkAnswer(allCorrect ? true : false);
+                    };
+                }
+            } else {
+                stopTimer();
+                renderResult();
+            }
+        }
+
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { draggedValue = ev.target.innerText; }
+        function drop(ev) {
+            ev.preventDefault();
+            ev.target.innerText = draggedValue;
+            ev.target.style.borderColor = '#22c55e';
+        }
+
+        function checkAnswer(isCorrectOrIndex) {
+            stopTimer(); // Matikan timer begitu siswa menjawab
+            const q = quizData[currentQuestion];
+
+            if (q.type === 'mcq' || q.type === 'tf') {
+                if (isCorrectOrIndex === q.answer) score++;
+            } else {
+                if (isCorrectOrIndex === true) score++;
+            }
+            
+            currentQuestion++;
+            renderQuestion();
+        }
+
+        function renderResult() {
+            showQuizSection('result');
+            document.getElementById('result-name').innerText = studentData.name;
+            document.getElementById('result-class').innerText = studentData.class;
+            
+            const finalScore = (score / quizData.length) * 100;
+            document.getElementById('result-score').innerText = Math.round(finalScore);
+        }
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            showQuizSection('question');
+            renderQuestion();
+        }
+
+        let isPlaying = true;
+        function toggleAudio() {
+            const music = document.getElementById('bg-music');
+            const label = document.getElementById('audio-label');
+            
+            // Hentikan audio penjelasan guru jika sedang diputar
+            document.getElementById('teacher-explanation').pause();
+
+            if (isPlaying) {
+                music.pause();
+                label.innerText = "Musik: OFF";
+                isPlaying = false;
+            } else {
+                music.play().then(() => {
+                    label.innerText = "Musik: ON";
+                    isPlaying = true;
+                }).catch(() => { alert("Gagal memutar lagu!"); });
+            }
+        }
+    </script>
+    <!-- ELEMEN AUDIO PENJELASAN (Ditaruh di sini agar rapi) -->
+    <!-- controls="none" artinya pemutar lagunya tidak akan terlihat oleh user -->
+    <audio id="audioGuru" preload="none" controls="none">
+        <source src="Assets/audio-hidrostatis.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung tag audio.
+    </audio>
+
+<script async="" src="file:///.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="6693a283-6b76-44e5-916a-514b93db9707" data-app-host="app.netlify.com"></script>
+</body></html>
